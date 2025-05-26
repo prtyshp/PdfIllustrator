@@ -14,7 +14,7 @@ const STYLE =
 
 export const runtime = "nodejs";  
 export const dynamic = "force-dynamic";
-export const maxDuration = 900;
+export const maxDuration = 60;
 
 function log(...args: unknown[]) {
   // Use this everywhere instead of console.log for clarity
@@ -133,6 +133,8 @@ async function extractPageTexts(pdfBytes: Uint8Array, totalPages: number): Promi
 }
 
 export async function POST(req: NextRequest) {
+  const MAX_SECONDS = 50; // Be safe, under 60s
+  const start = Date.now();
   const fd = await req.formData();
   const file = fd.get("file") as File | null;
   if (!file) return new Response("no file", { status: 400 });
@@ -175,6 +177,11 @@ export async function POST(req: NextRequest) {
   // --- Generate images
   const images: (Uint8Array | null)[] = [];
   for (let i = 0; i < scenePrompts.length; ++i) {
+    const elapsedSeconds = (Date.now() - start) / 1000;
+    if (elapsedSeconds > MAX_SECONDS) {
+    log(`Timeout: Only generated ${i} images in ${elapsedSeconds}s, bailing out.`);
+    break;
+  }
     const imgPrompt = `${scenePrompts[i]}. ${STYLE}`;
     const img = await generateImage(imgPrompt, i);
     images.push(img);
