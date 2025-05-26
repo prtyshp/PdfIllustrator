@@ -12,6 +12,7 @@ const CLOUDFLARE_SDXL_BASE_URL = `https://api.cloudflare.com/client/v4/accounts/
 const STYLE =
   "in a consistent, soft watercolor book illustration style, with gentle pastel colors. Use the same art style for all images in this PDF.";
 
+export const runtime = "nodejs";  
 export const dynamic = "force-dynamic";
 export const maxDuration = 900;
 

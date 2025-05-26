@@ -7,6 +7,8 @@ export default function Home() {
   const [error, setError] = useState("");
   const [step, setStep] = useState<"idle" | "working">("idle");
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [downloadFileName, setDownloadFileName] = useState<string | null>(null);
+  const [downloadFileSize, setDownloadFileSize] = useState<number | null>(null);
 
   useEffect(() => {
     // Clean up blob URL on new download or unmount
@@ -21,6 +23,8 @@ export default function Home() {
   setError("");
   setScenePrompts([]);
   setDownloadUrl(null);  // Clean up old url
+  setDownloadFileName(null);
+  setDownloadFileSize(null);
   setStep("working"); // <-- Set to working
 
   const formData = new FormData();
@@ -43,16 +47,13 @@ export default function Home() {
   // Download directly as PDF
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
+  // Get the original name, append _illustrated, always ends with .pdf
+  let name = file.name.replace(/\.pdf$/i, "");
+  name += "_illustrated.pdf";
+  setDownloadFileName(name);
+  // Get file size in MB rounded to 1 decimal
+  setDownloadFileSize(Number((blob.size / (1024 * 1024)).toFixed(1)));
   setDownloadUrl(url); // Save for the button
-  // const a = document.createElement("a");
-  // a.href = url;
-  // a.download = "illustrated.pdf";
-  // document.body.appendChild(a);
-  // a.click();
-  // setTimeout(() => {
-  //   document.body.removeChild(a);
-  //   URL.revokeObjectURL(url);
-  // }, 2000);
 };
 
   return (
@@ -100,11 +101,17 @@ export default function Home() {
       </div>
 
       {/* Manual download button */}
-      {downloadUrl && (
-        <div className="mt-8">
+      {downloadUrl && downloadFileName && (
+        <div className="mt-8 text-center">
+          <div className="mb-2 text-gray-800 text-sm">
+            <span className="font-bold">File:</span> {downloadFileName}{" "}
+            {downloadFileSize !== null && (
+              <span className="ml-2 text-gray-500">({downloadFileSize} MB)</span>
+            )}
+          </div>
           <a
             href={downloadUrl}
-            download="illustrated.pdf"
+            download={downloadFileName}
             className="bg-green-600 text-white px-6 py-2 rounded shadow font-bold hover:bg-green-700"
           >
             Download Illustrated PDF
