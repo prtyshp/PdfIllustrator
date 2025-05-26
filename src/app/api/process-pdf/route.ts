@@ -16,7 +16,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 900;
 
-function log(...args: any[]) {
+function log(...args: unknown[]) {
   // Use this everywhere instead of console.log for clarity
   console.log("[route.ts]", ...args);
 }
