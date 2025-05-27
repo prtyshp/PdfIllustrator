@@ -5,6 +5,7 @@ export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [scenePrompts, setScenePrompts] = useState<string[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"idle" | "working">("idle");
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [downloadFileName, setDownloadFileName] = useState<string | null>(null);
@@ -20,6 +21,7 @@ export default function Home() {
   const handleUpload = async () => {
   
     if (!file) return;
+  setLoading(true)
   setError("");
   setScenePrompts([]);
   setDownloadUrl(null);  // Clean up old url
@@ -38,7 +40,12 @@ export default function Home() {
   setStep("idle"); // <-- Back to idle after done
 
   if (!res.ok) {
+    if (res.status === 422) {
+      setError("Sorry, unable to detect text in the selected PDF. Please choose a file with extractable text (not a scanned image).");
+    } else {
     setError(`Upload failed with status ${res.status}`);
+    }
+    setLoading(false);
     return;
   }
 
@@ -54,11 +61,17 @@ export default function Home() {
   // Get file size in MB rounded to 1 decimal
   setDownloadFileSize(Number((blob.size / (1024 * 1024)).toFixed(1)));
   setDownloadUrl(url); // Save for the button
+  setLoading(false);
 };
 
   return (
     <main className="flex min-h-screen flex-col items-center px-4 py-10 max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Text Illustrator</h1>
+      <p className="text-sm text-gray-500 mb-2">
+        Upload your PDF and get it back as an illustrated book, complete with AI-generated images!
+      </p>
+      {/* File picker, etc */}
+      {error && <div className="text-red-600 mt-2">{error}</div>}
       <input
         type="file"
         accept="application/pdf"

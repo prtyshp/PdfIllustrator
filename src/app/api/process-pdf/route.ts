@@ -150,6 +150,13 @@ export async function POST(req: NextRequest) {
   log("PDF loaded, totalPages:", totalPages);
 
   const pageTexts = await extractPageTexts(uint8, totalPages);
+  const allText = pageTexts.join("").trim();
+  if (!allText) {
+    return new Response(
+      "No extractable text found in PDF.",
+      { status: 422 }
+    );
+  }
   log("Page texts extracted, example:", pageTexts[0]?.slice(0, 60), "...");
 
   const outputPdf = await PDFDocument.create();
