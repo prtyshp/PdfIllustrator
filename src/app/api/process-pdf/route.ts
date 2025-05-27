@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { PDFDocument } from "pdf-lib";
-// import pdfParse from "pdf-parse";
+import pdfParse from "pdf-parse";
 import sharp from "sharp";
 
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
@@ -132,11 +132,11 @@ async function extractPageTexts(pdfBytes: Uint8Array, totalPages: number): Promi
   return pages;
 }
 
-let pdfParse: any;
+// let pdfParse: any;
 export async function POST(req: NextRequest) {
-  if (!pdfParse) {
-    pdfParse = (await import("pdf-parse")).default;
-  }
+  // if (!pdfParse) {
+  //   pdfParse = (await import("pdf-parse")).default;
+  // }
   const MAX_SECONDS = 50; // Be safe, under 60s
   const start = Date.now();
   const fd = await req.formData();
