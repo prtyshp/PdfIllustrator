@@ -1,21 +1,13 @@
 diff --git a/node_modules/pdf-parse/index.js b/node_modules/pdf-parse/index.js
-index e9fc367..bd3cf5f 100644
+index e9fc367..47fcd1e 100644
 --- a/node_modules/pdf-parse/index.js
 +++ b/node_modules/pdf-parse/index.js
-@@ -3,12 +3,12 @@ const Pdf = require('./lib/pdf-parse.js');
+@@ -3,7 +3,7 @@ const Pdf = require('./lib/pdf-parse.js');
  
  module.exports = Pdf;
  
 -let isDebugMode = !module.parent; 
-+// let isDebugMode = !module.parent; 
-+let isDebugMode = false//!module.parent;
-+process.env.AUTO_KENT_DEBUG
++let isDebugMode = false; 
  
--//process.env.AUTO_KENT_DEBUG
+ //process.env.AUTO_KENT_DEBUG
  
--
--//for testing purpose
-+// for testing purpose
- if (isDebugMode) {
- 
-     let PDF_FILE = './test/data/05-versions-space.pdf';
